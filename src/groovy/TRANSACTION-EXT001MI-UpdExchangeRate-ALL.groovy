@@ -10,6 +10,7 @@
  Revision History:
  Name                 Date             Version          Description of Changes
  Arun Gopal           2025-04-03       1.0              Initial Version
+ Arun Gopal           2025-06-13       1.1              Adding method comments
  ******************************************************************************************/
 /**
  * Parameters: (All parameters are mandatory)
@@ -39,6 +40,10 @@ public class UpdExchangeRate extends ExtendM3Transaction {
     this.utility = utility;
   }
 
+  /**
+   * Main method
+   * @return
+   */
   public void main() {
     int CONO = mi.getIn().get("CONO") == null ? (int) program.getLDAZD().get("CONO") : (int) mi.getIn().get("CONO");
     String DIVI = (String) mi.getIn().get("DIVI");
@@ -96,6 +101,9 @@ public class UpdExchangeRate extends ExtendM3Transaction {
     }
   }
 
+  /**
+   * Write record to table EXTINV
+   */
   private String insertRecordInCustomTable(int CONO, String DIVI, String ORNO, long DLIX, String GBP, String USD, String EUR) {
     deleteRecordFromEXTINV(CONO, DIVI, ORNO, DLIX);
     DBAction queryEXTINV = database.table("EXTINV")
@@ -118,6 +126,10 @@ public class UpdExchangeRate extends ExtendM3Transaction {
     queryEXTINV.insert(containerEXTINV);
   }
 
+  /**
+   * Retrieve the Delivery number
+   * @return Delivery number
+   */
   private long fetchDeliveryNumber(int CONO, String ORNO) {
     long value = 0;
     ExpressionFactory expression = database.getExpressionFactory("MHDISH");
@@ -141,6 +153,9 @@ public class UpdExchangeRate extends ExtendM3Transaction {
     return value;
   }
 
+  /**
+   * Delete record from table EXTINV
+   */
   private String deleteRecordFromEXTINV(int CONO, String DIVI, String ORNO, long DLIX) {
     DBAction dbaEXTINV = database.table("EXTINV")
       .index("00")
@@ -161,6 +176,10 @@ public class UpdExchangeRate extends ExtendM3Transaction {
     }
   }
 
+  /**
+   * Retrieve the Current exchange rate based on the Invoice date
+   * @return Current exchange rate
+   */
   private String fetchExchangeRate(int CONO, String DIVI, String CUCD, int IVDT) {
     String value = "";
     ExpressionFactory expression = database.getExpressionFactory("CCURRA");

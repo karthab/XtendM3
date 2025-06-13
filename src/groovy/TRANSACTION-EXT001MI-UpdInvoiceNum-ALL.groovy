@@ -10,6 +10,7 @@
  Revision History:
  Name                 Date             Version          Description of Changes
  Arun Gopal           2025-04-09       1.0              Initial Version
+ Arun Gopal           2025-06-13       1.1              Adding method comments
  ******************************************************************************************/
 /**
  * Parameters: (All parameters are mandatory)
@@ -39,6 +40,10 @@ public class UpdInvoiceNum extends ExtendM3Transaction {
     this.utility = utility;
   }
 
+  /**
+   * Main method
+   * @return
+   */
   public void main() {
     int CONO = mi.getIn().get("CONO") == null ? (int) program.getLDAZD().get("CONO") : (int) mi.getIn().get("CONO");
     String DIVI = (String) mi.getIn().get("DIVI");
@@ -123,6 +128,9 @@ public class UpdInvoiceNum extends ExtendM3Transaction {
     queryEXTINV.readLock(containerEXTINV, updateCallBack);
   }
 
+  /**
+   * Update Extended invoice number
+   */
   Closure < ? > updateCallBack = {
     LockedResult lockedResult ->
     int LMDT = RGDT;

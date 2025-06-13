@@ -10,6 +10,7 @@
  Revision History:
  Name                 Date             Version          Description of Changes
  Arun Gopal           2025-03-18       1.0              Initial Version
+ Arun Gopal           2025-06-13       1.1              Adding method comments
  ******************************************************************************************/
 /**
  * Parameters: (All parameters are mandatory)
@@ -73,6 +74,10 @@ public class UpdAddressID extends ExtendM3Transaction {
     this.utility = utility;
   }
 
+  /**
+   * Main method
+   * @return
+   */
   public void main() {
     int CONO = mi.getIn().get("CONO") == null ? (int) program.getLDAZD().get("CONO") : (int) mi.getIn().get("CONO");
     String ORNO = (String) mi.getIn().get("ORNO");
@@ -212,6 +217,10 @@ public class UpdAddressID extends ExtendM3Transaction {
     updateADVI_ADIDInDelivery(CONO, ORNO);
   }
 
+  /**
+   * Read each delivery number associated to the
+   * Customer order and proceed for update
+   */
   private String updateADVI_ADIDInDelivery(int CONO, String ORNO) {
     // Update Address ID and Ship-via Address in Delivery
     ExpressionFactory expression = database.getExpressionFactory("MHDISH");
@@ -243,6 +252,9 @@ public class UpdAddressID extends ExtendM3Transaction {
     }
   }
 
+  /**
+   * Call to update method
+   */
   private String updateShipViaAddressInCustomerAddress(int CONO, String CUNO) {
     DBAction queryOCUSAD = database.table("OCUSAD")
       .index("00")
@@ -256,6 +268,10 @@ public class UpdAddressID extends ExtendM3Transaction {
     queryOCUSAD.readLock(containerOCUSAD, updateCallBack3);
   }
 
+  /**
+   * Retrieve the Address ID from CO address
+   * @return record found/not found
+   */
   private boolean retrieveCurrentAddressID(int CONO, String ORNO) {
     boolean value = "";
     DBAction dbOOADRE = database.table("OOADRE")
@@ -280,6 +296,10 @@ public class UpdAddressID extends ExtendM3Transaction {
     return value;
   }
 
+  /**
+   * Validating the Customer order
+   * @return record found/not found
+   */
   private boolean validateCustomerOrder(int CONO, String ORNO) {
     boolean value = true;
     DBAction dbaOOHEAD00 = database.table("OOHEAD")
@@ -302,6 +322,10 @@ public class UpdAddressID extends ExtendM3Transaction {
     return value;
   }
 
+  /**
+   * Validate Address ID and retrieve values
+   * @return record found/not found
+   */
   private boolean validateADIDInOCUSAD(int CONO, String ODADRT) {
     boolean value = true;
     DBAction dbaOCUSAD = database.table("OCUSAD")
@@ -357,6 +381,10 @@ public class UpdAddressID extends ExtendM3Transaction {
     return value;
   }
 
+  /**
+   * Update Address ID and Ship-via address
+   * @return record updated/not updated
+   */
   private boolean updateShipViaAddressInCOAddress(int CONO, String ORNO, int condition) {
     boolean value = true;
     if (condition == 1) {
@@ -448,6 +476,10 @@ public class UpdAddressID extends ExtendM3Transaction {
     return value;
   }
 
+  /**
+   * Update both the Consignee and Final consignee
+   * address number along with Ship-via address
+   */
   Closure < ? > updateCallBack4 = {
     LockedResult lockedResult ->
     int LMDT = RGDT;
@@ -460,7 +492,10 @@ public class UpdAddressID extends ExtendM3Transaction {
     lockedResult.set("OQCHID", CHID);
     lockedResult.update();
   }
-
+  
+  /**
+   * Update Ship-via address in Customer address
+   */
   Closure < ? > updateCallBack3 = {
     LockedResult lockedResult ->
     int LMDT = RGDT;
@@ -472,6 +507,9 @@ public class UpdAddressID extends ExtendM3Transaction {
     lockedResult.update();
   }
 
+  /**
+   * Update Ship-via address in Customer order address
+   */
   Closure < ? > updateCallBack2 = {
     LockedResult lockedResult ->
     int LMDT = RGDT;
@@ -483,6 +521,9 @@ public class UpdAddressID extends ExtendM3Transaction {
     lockedResult.update();
   }
 
+  /**
+   * Update Address ID in Customer order lines
+   */
   Closure < ? > updateCallBack1 = {
     LockedResult lockedResult ->
     int LMDT = RGDT;
@@ -494,6 +535,9 @@ public class UpdAddressID extends ExtendM3Transaction {
     lockedResult.update();
   }
 
+  /**
+   * Update Address ID in Customer order header
+   */
   Closure < ? > updateCallBack = {
     LockedResult lockedResult ->
     int LMDT = RGDT;
