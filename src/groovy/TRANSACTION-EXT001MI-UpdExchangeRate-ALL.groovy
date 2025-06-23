@@ -11,6 +11,7 @@
  Name                 Date             Version          Description of Changes
  Arun Gopal           2025-04-03       1.0              Initial Version
  Arun Gopal           2025-06-13       1.1              Adding method comments
+ Arun Gopal           2025-06-23       1.2              Renaming column names
  ******************************************************************************************/
 /**
  * Parameters: (All parameters are mandatory)
@@ -68,9 +69,9 @@ public class UpdExchangeRate extends ExtendM3Transaction {
       return;
     }
     //Fetch exchange rates
-    String ARAT_GBP = fetchExchangeRate(CONO, DIVI, "GBP", IVDT);
-    String ARAT_USD = fetchExchangeRate(CONO, DIVI, "USD", IVDT);
-    String ARAT_EUR = fetchExchangeRate(CONO, DIVI, "EUR", IVDT);
+    double ARAT_GBP = fetchExchangeRate(CONO, DIVI, "GBP", IVDT);
+    double ARAT_USD = fetchExchangeRate(CONO, DIVI, "USD", IVDT);
+    double ARAT_EUR = fetchExchangeRate(CONO, DIVI, "EUR", IVDT);
     //Check record in OIS151
     DBAction dbaOOI150 = database.table("OOI150")
       .index("20")
@@ -104,7 +105,7 @@ public class UpdExchangeRate extends ExtendM3Transaction {
   /**
    * Write record to table EXTINV
    */
-  private String insertRecordInCustomTable(int CONO, String DIVI, String ORNO, long DLIX, String GBP, String USD, String EUR) {
+  private String insertRecordInCustomTable(int CONO, String DIVI, String ORNO, long DLIX, double GBP, double USD, double EUR) {
     deleteRecordFromEXTINV(CONO, DIVI, ORNO, DLIX);
     DBAction queryEXTINV = database.table("EXTINV")
       .index("00")
@@ -115,9 +116,9 @@ public class UpdExchangeRate extends ExtendM3Transaction {
     containerEXTINV.set("EXDIVI", DIVI);
     containerEXTINV.set("EXORNO", ORNO);
     containerEXTINV.set("EXDLIX", DLIX);
-    containerEXTINV.set("EXUDF1", GBP);
-    containerEXTINV.set("EXUDF2", USD);
-    containerEXTINV.set("EXUDF3", EUR);
+    containerEXTINV.set("EXCGBP", GBP);
+    containerEXTINV.set("EXCUSD", USD);
+    containerEXTINV.set("EXCEUR", EUR);
     containerEXTINV.set("EXRGDT", RGDT);
     containerEXTINV.set("EXRGTM", RGTM);
     containerEXTINV.set("EXLMDT", RGDT);
@@ -180,8 +181,8 @@ public class UpdExchangeRate extends ExtendM3Transaction {
    * Retrieve the Current exchange rate based on the Invoice date
    * @return Current exchange rate
    */
-  private String fetchExchangeRate(int CONO, String DIVI, String CUCD, int IVDT) {
-    String value = "";
+  private double fetchExchangeRate(int CONO, String DIVI, String CUCD, int IVDT) {
+    double value = 0.00;
     ExpressionFactory expression = database.getExpressionFactory("CCURRA");
     expression = expression.le("CUCUTD", String.valueOf(IVDT));
     DBAction dbaCCURRA = database.table("CCURRA")
