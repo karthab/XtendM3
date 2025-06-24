@@ -119,22 +119,22 @@ public class UpdInvoiceNum extends ExtendM3Transaction {
       DBContainer dataODLINE ->
       ORNO = dataODLINE.get("UBORNO");
       DLIX = dataODLINE.get("UBDLIX");
+      //Update Invoice number to extension table
+      DBAction queryEXTINV = database.table("EXTINV")
+        .index("00")
+        .selection("EXCONO", "EXDIVI", "EXORNO", "EXDLIX")
+        .build();
+      DBContainer containerEXTINV = queryEXTINV.getContainer();
+      containerEXTINV.set("EXCONO", CONO);
+      containerEXTINV.set("EXDIVI", DIVI);
+      containerEXTINV.set("EXORNO", ORNO);
+      containerEXTINV.set("EXDLIX", DLIX);
+      queryEXTINV.readLock(containerEXTINV, updateCallBack);
     }
-    if (!dbaODLINE.readAll(conODLINE, 5, 1, resultHandlerODLINE)) {
+    if (!dbaODLINE.readAll(conODLINE, 5, 9999, resultHandlerODLINE)) {
       mi.error("Record does not exist");
       return;
     }
-    //Update Invoice number to extension table
-    DBAction queryEXTINV = database.table("EXTINV")
-      .index("00")
-      .selection("EXCONO", "EXDIVI", "EXORNO", "EXDLIX")
-      .build();
-    DBContainer containerEXTINV = queryEXTINV.getContainer();
-    containerEXTINV.set("EXCONO", CONO);
-    containerEXTINV.set("EXDIVI", DIVI);
-    containerEXTINV.set("EXORNO", ORNO);
-    containerEXTINV.set("EXDLIX", DLIX);
-    queryEXTINV.readLock(containerEXTINV, updateCallBack);
   }
 
   /**
